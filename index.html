@@ -116,6 +116,12 @@
     .leaflet-control-layers {
       background: rgba(255, 255, 255, 0.75);
     }
+
+    .leaflet-tooltip.my-labels {
+      background-color: transparent;
+      border: transparent;
+      box-shadow: none;
+    }    
   </style>
 </head>
 
@@ -126,7 +132,7 @@
   <header>
     <h1>The Geography of Racism in the Midwest</h1><br>
     <h3><i>Iowa and Bordering States, Inclusive of Kansas</i></h3>
-    <h2>Map by Leia Belt; Data courtesy of the <a href="https://justice.tougaloo.edu/sundown-towns/using-the-sundown-towns-database/" style="color:blue;">Sundown Towns Database</a> and the <a href="https://dsps.lib.uiowa.edu/hicrn/" style="color:blue;">Historical Iowa Civil Rights Network</a>.</h2>
+    <h2>Map by Leia Belt; Data courtesy of the <a href="https://justice.tougaloo.edu/sundown-towns/using-the-sundown-towns-database/" style="color:blue;">Sundown Towns Database</a>, the <a href="https://dsps.lib.uiowa.edu/hicrn/" style="color:blue;">Historical Iowa Civil Rights Network</a>, the <a href ="https://data.apps.fao.org/catalog/iso/9264483f-ca14-496b-aeae-fe1b8aebf520" style="color:blue;">Food and Agriculture Organization</a>, and <a href ="https://my.vanderbilt.edu/jeremyatack/data-downloads/" style="color:blue;">Jeremy Atack</a></h2>
   </header>
   <!-- Add a link to the Leaflet JavaScript library so you can reference it for building your map -->
   <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
@@ -236,7 +242,7 @@
     */
     // use jquery to load GeoJSON data
     $.when(
-      $.getJSON("data/mw-sundown-town-counties.geojson"),
+      $.getJSON("data/mw-counties.json"),
       $.getJSON("data/mw-sundown-zips.geojson"),
       $.getJSON("data/mw-sundown-towns.geojson"),
       $.getJSON("data/us-rivers.json"),
@@ -244,10 +250,11 @@
       $.getJSON("data/unrest.geojson"),
       $.getJSON("data/underground-rr.geojson"),
       $.getJSON("data/GreenBookPoints.geojson"),
-      $.getJSON("data/mw-states.geojson")
+      $.getJSON("data/mw-states.geojson"),
+      $.getJSON("data/interstates.json")
       // when the files are done loading,
       // identify them with names and process them through a function  
-    ).done(function(sdc, sdz, sdtwns, rivs, hrrs, unr, urr, gbp, sts) {
+    ).done(function(sdc, sdz, sdtwns, rivs, hrrs, unr, urr, gbp, sts, hwys) {
 
       // add the states layer
       const states = L.geoJson(sts, {
@@ -267,12 +274,14 @@
       const counties = L.geoJson(sdc, {
         // give the counties a dull-orange color, a weight of 1, a gray outline, and a fill opacity of 0.75
         style: function(feature) {
+          // if the property "Sundown" is 1, fill color the county "#E8B34C" with an opacity of 0.75
+          // if the property "Sundown" is 0, fill color the county "#E8B34C" with an opacity of 0
           return {
             color: "gray",
             weight: 1,
             opacity: 0.75,
             fillColor: "#E8B34C",
-            fillOpacity: 0.75
+            fillOpacity: feature.properties.Sundown == 1 ? 0.75 : 0
           };
         },
         onEachFeature: function(feature, layer) {
@@ -286,14 +295,14 @@
           layer.on("mouseover", function(e) {
             layer.setStyle({
               opacity: 0.95,
-              fillOpacity: 0.95,
+              fillOpacity: feature.properties.Sundown == 1 ? 0.95 : 0,
               weight: 2
             });
           });
           layer.on("mouseout", function(e) {
             layer.setStyle({
               opacity: 0.75,
-              fillOpacity: 0.75,
+              fillOpacity: feature.properties.Sundown == 1 ? 0.75 : 0,
               weight: 1
             });
           });
@@ -336,6 +345,7 @@
           });
         }
       });
+
       // add a leaflet layer for the rivers
       const rivers = L.geoJson(rivs, {
         // style hierarchically based on the "Strahler" property
@@ -370,6 +380,7 @@
           };
         }
       });
+
       // add a leaflet layer for the railroads
       const railroads = L.geoJson(hrrs, {
         // add a zoom-dependent style
@@ -386,10 +397,32 @@
           return {
             color: color,
             weight: weight,
-            opacity: 0.65
+            opacity: 0.25
           };
         }
       });
+
+      // add and style the highways
+      const highways = L.geoJson(hwys, {
+        // add a zoom-dependent style
+        style: function(feature) {
+          let zoomLevel = map.getZoom();
+          let color, weight;
+          if (zoomLevel < 5) {
+            color = "#c83454";
+            weight = 0.5;
+          } else {
+            color = "#c83454";
+            weight = 1;
+          }
+          return {
+            color: color,
+            weight: weight,
+            opacity: 0.25
+          };
+        }
+      });
+      
       const sundownTowns = L.geoJson(sdtwns, {
         pointToLayer: function(feature, latlng) {
           return L.circleMarker(latlng, {
@@ -563,8 +596,9 @@
           "Turn Off": CartoDB_Positron,
         },
         "<b>Overlays</b>": {
-          "Railroads": railroads,
           "Rivers": rivers,
+          "Railroads": railroads,
+          "Interstates": highways,
           "Underground Railroad Sites": underground,
           "Iowa Green Book Sites": greenBookMarkers,
           "Sundown Towns": sundownTowns,
@@ -584,6 +618,7 @@
         zips,
         rivers,
         railroads,
+        highways,
         underground,
         sundownTowns,
         unrest,
