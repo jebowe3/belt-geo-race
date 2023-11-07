@@ -15,7 +15,7 @@
 { "type": "Feature", "properties": { "Owner": "Hotel Ellis", "Type": "Hotel", "Address": "Waterloo" }, "geometry": { "type": "Point", "coordinates": [ -92.33296, 42.49797 ] } },
 { "type": "Feature", "properties": { "Owner": "Oak Grove Motel", "Type": "Motel", "Address": "Highway 6, Iowa City, Iowa" }, "geometry": { "type": "Point", "coordinates": [ -91.55117, 41.66499 ] } },
 { "type": "Feature", "properties": { "Owner": "Parker-Roach", "Type": "Hotel", "Address": "762(1/2) 9th Street, Des Moines, Iowa" }, "geometry": { "type": "Point", "coordinates": [ -93.6297, 41.59013 ] } },
-{ "type": "Feature", "properties": { "Owner": "Cunningham's", "Type": "Restaurant", "Address": "1602 E. University, Des Moines, Iowa" }, "geometry": { "type": "Point", "coordinates": [ -93.6099, 41.60278 ] } },
+{ "type": "Feature", "properties": { "Owner": "Cunningham's", "Type": "Restaurant", "Address": "1602 E. University, Des Moines, Iowa" }, "geometry": { "type": "Point", "coordinates": [ -93.59471, 41.60096 ] } },
 { "type": "Feature", "properties": { "Owner": "Adams", "Type": "Drug Store", "Address": "E. 5th and Locust Street, Des Moines, Iowa" }, "geometry": { "type": "Point", "coordinates": [ -93.6112, 41.58967 ] } },
 { "type": "Feature", "properties": { "Owner": "Holgates", "Type": "Service Station", "Address": "6th and Oak Park, Des Moines, Iowa" }, "geometry": { "type": "Point", "coordinates": [ -93.63421, 41.62783 ] } },
 { "type": "Feature", "properties": { "Owner": "Hotel Kirkwood", "Type": "Hotel", "Address": "4th and Walnut Street, Des Moines, Iowa" }, "geometry": { "type": "Point", "coordinates": [ -93.61891, 41.58712 ] } },
