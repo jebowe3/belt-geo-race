@@ -159,6 +159,12 @@
       maxZoom: 20
     }).addTo(map);
 
+    const CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
+    });
+
     const CartoDB_PositronOnlyLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
       pane: 'labels',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -251,7 +257,7 @@
         },
         onEachFeature: function(feature, layer) {
             let props = layer.feature.properties;
-            let content = '<b>' + props.NAMELSAD + '</b>';
+            let content = '<b>' + props.NAMELSAD + ', ' + props.STATE + '</b>';
             layer.bindTooltip(content, {
                 pane: 'custom-tooltip-pane',
                 sticky: true,
@@ -533,7 +539,8 @@ gbp[0].features.forEach(function(feature) {
       const groupedOverlays = {
         "<b>Jurisdictions with Sundown Towns</b>": {
           "Counties": counties,
-          "Zip Codes": zips
+          "Zip Codes": zips,
+          "Turn Off": CartoDB_Positron,
         },
         "<b>Overlays</b>": {
           "Railroads": railroads,
